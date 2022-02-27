@@ -1,0 +1,12 @@
+{
+    "name": "dashcam",
+    "version-string": "0.0.1.a1227",
+    "dependencies": [
+      {
+          "name": "opencv", 
+          "default-features": false, 
+          "features" : ["cuda", "default-features"]         
+     },
+     "fmt"
+    ]
+  }
