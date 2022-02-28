@@ -44,8 +44,10 @@ int main(int argc, char** argv)
         fmt::print("Wrong image size {},{}. Should be 3840,2160 for this b4k utility", refS.width, refS.height);
     }
 
-    int ex = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC));
-    cv::VideoWriter outVideo(cmd["out"],ex,cap.get(cv::CAP_PROP_FPS),refS, true);
+    //int ex = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC));
+    cv::VideoWriter outVideo(cmd["out"], 
+    cv::VideoWriter::fourcc('A','V','C','1'), cap.get(cv::CAP_PROP_FPS), refS, true);
+    
     if(!outVideo.isOpened())
     {
         fmt::print("Unable to open for output {}. Exiting.", cmd["out"]);
@@ -72,19 +74,22 @@ int main(int argc, char** argv)
 
     // start converting video
     cv::Mat frameIn;
-    cv::Mat result;
-    cv::cuda::GpuMat gpuRes, tempBuf1, tempBuf2, resize,tempBuf3, tempBuf4;
-    // note that there issues with DPI settings...
-    cv::namedWindow("result", cv::WINDOW_AUTOSIZE);
-    cap >> frameIn;        
-    if(frameIn.empty())
-    {
-        return -1;
-    }
-    tempBuf1.upload(frameIn);
-    tempBuf1.convertTo(gpuRes, CV_32FC3);
+    cv::Mat cpuPreview;
 
+    // needed volatile buffers. 
+    cv::cuda::GpuMat stagingFrameUpload, gpuFrameFloat;
+    cv::cuda::GpuMat remapOut, previewResize, previewStaging;
+    cv::cuda::GpuMat outputStaging;
+
+
+    // note that there issues with DPI settings on the openCV GUI
+    cv::namedWindow("Preview", cv::WINDOW_AUTOSIZE);
     std::future<void> imgdisp, imgdecode, avwrite, avstaging;
+
+    // this pipeline is made to work in parallel
+    // decode, image display processing and encode are in parallel
+
+    // launch first frame decode.
     imgdecode = std::async(std::launch::async,[&]()
     {
         cap >> frameIn;        
@@ -92,17 +97,20 @@ int main(int argc, char** argv)
         {
             return;
         }
-        tempBuf1.upload(frameIn);
-        tempBuf1.convertTo(gpuRes, CV_32FC3);
+        // re-use remapOut as staging
+        stagingFrameUpload.upload(frameIn);
+        stagingFrameUpload.convertTo(gpuFrameFloat, CV_32FC3);
     });
     while(1)
     {
+        // wait for preview and display
         if(imgdisp.valid())
         {
             imgdisp.wait();
-            cv::imshow("result", result);
+            cv::imshow("Preview", cpuPreview);
             cv::waitKey(2);
         }
+        // wait for decode
         if(imgdecode.valid())
         {
             imgdecode.wait();
@@ -118,13 +126,13 @@ int main(int argc, char** argv)
             break;
         }
        
-        cv::cuda::remap(gpuRes,tempBuf1,mapxCUDA, mapyCUDA, cv::INTER_CUBIC);
-        cv::cuda::resize(tempBuf1, resize,cv::Size(1920,1080));
+        cv::cuda::remap(gpuFrameFloat, remapOut,mapxCUDA, mapyCUDA, cv::INTER_CUBIC);
+        cv::cuda::resize(remapOut, previewResize,cv::Size(1920,1080));
 
         imgdisp = std::async(std::launch::async, 
         [&](){
-            resize.convertTo(tempBuf4, CV_8UC3);
-            tempBuf4.download(result);
+            previewResize.convertTo(previewStaging, CV_8UC3);
+            previewStaging.download(cpuPreview);
         });
         imgdecode = std::async(std::launch::async,[&]()
         {
@@ -133,8 +141,8 @@ int main(int argc, char** argv)
             {
                 return;
             }
-            tempBuf2.upload(frameIn);
-            tempBuf2.convertTo(gpuRes, CV_32FC3);
+            stagingFrameUpload.upload(frameIn);
+            stagingFrameUpload.convertTo(gpuFrameFloat, CV_32FC3);
         });
 
         // wait for avwrite
@@ -144,13 +152,13 @@ int main(int argc, char** argv)
         }
         avstaging = std::async(std::launch::async, 
         [&](){
-            tempBuf1.convertTo(tempBuf3, CV_8UC3);
+            remapOut.convertTo(outputStaging, CV_8UC3);
         });
         avwrite = std::async(std::launch::async, 
         [&](){
             avstaging.wait();
             cv::Mat frameOut;
-            tempBuf3.download(frameOut);
+            outputStaging.download(frameOut);
             outVideo << frameOut;
         });        
     }

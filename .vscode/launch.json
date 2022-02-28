@@ -9,7 +9,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["--in=papers_camera_calibration/20220224095000_000036A.TS", "--out=out.ts"],
+            "args": ["--in=papers_camera_calibration/20220224095000_000036A.TS", "--out=out.mp4"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

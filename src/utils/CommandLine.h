@@ -1,5 +1,8 @@
 #pragma once
-
+/*
+    Simple class to exemplify CMAKE build files for a lib
+    OpenCV has their own CommandLineParameters class.    
+*/
 #include <string>
 #include <unordered_map>
 #include <optional>
