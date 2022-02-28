@@ -9,7 +9,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["--file=test/vlcsnap-00001.png"],
+            "args": ["--in=papers_camera_calibration/20220224095000_000036A.TS", "--out=out.ts"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
