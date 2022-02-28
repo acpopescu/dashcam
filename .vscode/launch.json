@@ -9,7 +9,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
-            "args": ["--file=test/vlcsnap-00003.png"],
+            "args": ["--file=test/vlcsnap-00001.png"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

@@ -45,8 +45,11 @@ int main(int argc, char** argv)
         fmt::print("No image data \n");
         return -1;
     }
+    // note that there issues with DPI settings...
     cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
-    cv::imshow("image", image);
+    cv::Mat tempResize;
+    cv::resize(image,tempResize,cv::Size(1920,1080));
+    cv::imshow("image", tempResize);
     cv::waitKey();
 
     cv::cuda::GpuMat gpuRes, tempBuf1, tempBuf2;
@@ -87,6 +90,7 @@ int main(int argc, char** argv)
     cv::Mat result;
     tempBuf1.download(result);
     result.convertTo(result,CV_8UC3);
+    cv::resize(result,result,cv::Size(1920,1080));
     cv::imshow("result", result);
     cv::waitKey();
 
