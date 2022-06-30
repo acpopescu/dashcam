@@ -9,6 +9,7 @@ project(dashcam CXX)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(OpenCV CONFIG REQUIRED)
+find_package(FFMPEG REQUIRED)
 
 
 project(dashcam VERSION 0.1.0)

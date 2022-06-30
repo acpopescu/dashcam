@@ -29,3 +29,83 @@ Rolling-shutter independence: https://arxiv.org/abs/1808.00558
 # Camera calibration
 https://github.com/alexvbogdan/DeepCalib
 
+# clang static analyzer
+-analyzer-viz-egraph-graphviz `
+```
+clang `
+-cc1 `
+-cc1 `
+-triple `
+x86_64-pc-windows-msvc19.30.30709 `
+-analyze `
+-disable-free `
+-clear-ast-before-backend `
+-analyzer-display-progress `
+-analyzer-max-loop 32 `
+-disable-llvm-verifier `
+-discard-value-names `
+-main-file-name main.cpp `
+"-analyze-function=modeltest(int)" `
+-analyzer-store=region `
+-analyzer-inline-max-stack-depth 32 `
+-analyzer-opt-analyze-nested-blocks `
+-analyzer-checker=core `
+-analyzer-checker=apiModeling `
+"-analyzer-checker=unix" `
+"-analyzer-checker=deadcode" `
+"-analyzer-checker=cplusplus" `
+"-analyzer-checker=security" `
+"-analyzer-checker=nullability" `
+-analyzer-output plist `
+-w `
+-setup-static-analyzer `
+-mrelocation-model pic `
+-pic-level 2 `
+-mframe-pointer=none `
+-fmath-errno `
+-ffp-contract=on `
+-fno-rounding-math `
+-mconstructor-aliases `
+-funwind-tables=2 `
+-target-cpu x86-64 `
+-tune-cpu generic `
+-fcoverage-compilation-dir=F:\dev\dashcam\build `
+-resource-dir F:\LLVM\lib\clang\15.0.0 `
+-isystem F:/dev/dashcam/build/vcpkg_installed/x64-windows/include `
+-D FMT_LOCALE `
+-D FMT_SHARED `
+-I F:/dev/dashcam/src `
+-I F:/dev/dashcam/src/ffmpeg_tutorial/fmt::fmt `
+-D _DEBUG `
+-D _DLL `
+-D _MT `
+-internal-isystem "F:\LLVM\lib\clang\15.0.0\include" `
+-internal-isystem "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\include" `
+-internal-isystem "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.30.30705\atlmfc\include" `
+-internal-isystem "C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\ucrt" `
+-internal-isystem "C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared" `
+-internal-isystem "C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\um" `
+-internal-isystem "C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\winrt" `
+-internal-isystem "C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\cppwinrt" `
+-O0 `
+-fdeprecated-macro `
+-fdebug-compilation-dir=F:\dev\dashcam\build `
+-ferror-limit `
+19 `
+-fno-use-cxa-atexit `
+-fms-extensions `
+-fms-compatibility `
+"-fms-compatibility-version=19.30.30709" `
+-std=c++14 `
+-fdelayed-template-parsing `
+-fcxx-exceptions `
+-fexceptions `
+-analyzer-output=html `
+-gcodeview `
+"--dependent-lib=msvcrtd" `
+-faddrsig `
+-o f:\tempo `
+-x c++ `
+F:/dev/dashcam/src/ffmpeg_tutorial/main.cpp
+```
+

@@ -25,3 +25,10 @@ I used Conda, create the environment with
 conda env create -f=environment.yml
 conda activate dashcam
 ```
+
+# ffmpeg info
+I'm trying out a thing where I need to use ffmpeg as the default opencv impl can't compress! 
+TBH it is looking like a bit too much back and forth from gpu to cpu, and I don't like it. 
+- going through this ffmpeg tutorial first. https://github.com/leandromoreira/ffmpeg-libav-tutorial#codec---shrinking-data
+
+

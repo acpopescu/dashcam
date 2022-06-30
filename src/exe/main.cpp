@@ -44,9 +44,12 @@ int main(int argc, char** argv)
         fmt::print("Wrong image size {},{}. Should be 3840,2160 for this b4k utility", refS.width, refS.height);
     }
 
-    //int ex = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC));
-    cv::VideoWriter outVideo(cmd["out"], 
-    cv::VideoWriter::fourcc('A','V','C','1'), cap.get(cv::CAP_PROP_FPS), refS, true);
+    int ex = static_cast<int>(cap.get(cv::CAP_PROP_FOURCC));
+    
+    cv::VideoWriter outVideo(cmd["out"],
+        
+        ex,
+        cap.get(cv::CAP_PROP_FPS), refS, true);
     
     if(!outVideo.isOpened())
     {
