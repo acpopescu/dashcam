@@ -17,6 +17,7 @@ project(dashcam VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
+set(CXX_STANDARD_REQUIRED C++17)
 add_subdirectory(src)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

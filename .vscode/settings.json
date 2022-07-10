@@ -1,5 +1,6 @@
 {
     "cmake.configureOnOpen": false,
+    "cmake.parallelJobs": 0,
     "files.associations": {
         "algorithm": "cpp",
         "array": "cpp",

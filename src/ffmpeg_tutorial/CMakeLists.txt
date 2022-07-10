@@ -1,3 +1,11 @@
+if(NOT FFMPEG_FOUND)
+  message(FATAL_ERROR "FFMPEG not found")
+else()
+  message(STATUS "Found FFMPEG libraries:" "${FFMPEG_LIBRARIES}")
+  message(STATUS "Found FFMPEG library dirs:" "${FFMPEG_LIBRARY_DIRS}")
+  message(STATUS "Found opencv libraries:" "${OpenCV_LIBS}")
+endif()
+
 add_executable(ffmpeg_tutorial main.cpp)
 set_target_properties(ffmpeg_tutorial PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(ffmpeg_tutorial PRIVATE
@@ -5,10 +13,10 @@ target_include_directories(ffmpeg_tutorial PRIVATE
     ${FFMPEG_INCLUDE_DIRS}
     fmt::fmt)
 
-target_link_directories(ffmpeg_tutorial PRIVATE ${FFMPEG_LIBRARY_DIRS})
 
 target_link_libraries(ffmpeg_tutorial 
   PRIVATE 
+    dashcam_utils
     fmt::fmt
     ${OpenCV_LIBS}
     ${FFMPEG_LIBRARIES}
